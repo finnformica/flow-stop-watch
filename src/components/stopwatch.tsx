@@ -1,5 +1,6 @@
 import { Clock } from "lucide-react";
-import { useState } from "react";
+import { AnimatePresence, Easing, motion } from "motion/react";
+import { useEffect, useState } from "react";
 
 import useStopwatch from "@/hooks/use-stopwatch";
 
@@ -21,24 +22,58 @@ const Stopwatch = () => {
   } = useStopwatch();
 
   const [clockMode, setClockMode] = useState("analog");
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  useEffect(() => {
+    // After initial animations complete, mark as no longer initial load
+    const timer = setTimeout(() => {
+      setIsInitialLoad(false);
+    }, 2000); // Wait for initial animations to complete
+    return () => clearTimeout(timer);
+  }, []);
+
+  const initial = { opacity: 0, y: 20 };
+  const animate = { opacity: 1, y: 0 };
+  const exit = { opacity: 0, y: -20 };
+  const transition = (i: number) => ({
+    duration: 0.5,
+    delay: (1 + i) * 0.25,
+    ease: "easeOut" as Easing,
+  });
 
   return (
     <div className="min-h-screen bg-background transition-colors duration-200 min-w-lg max-w-6xl mx-auto p-8 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <motion.div
+        className="flex items-center justify-between"
+        initial={initial}
+        animate={animate}
+        transition={transition(0)}
+      >
         <div>
           <h1 className="text-3xl font-semibold text-foreground">Stopwatch</h1>
           <p className="text-muted-foreground">
             Because &ldquo;a minute&rdquo; is rarely ever a minute
           </p>
         </div>
+
         <ThemeToggle />
-      </div>
+      </motion.div>
 
       {/* Main Clock Display Card */}
-      <div className="border border-border rounded-xl shadow-sm dark:shadow-none transition-all duration-200 overflow-hidden relative">
+      <motion.div
+        className="border border-border rounded-xl shadow-sm dark:shadow-none transition-all duration-200 overflow-hidden relative"
+        initial={initial}
+        animate={animate}
+        transition={transition(1)}
+      >
         {/* Clock Mode Toggle - Top Left */}
-        <div className="absolute top-4 left-4 z-10 flex gap-0.5 bg-muted rounded-lg p-0.5 border">
+        <motion.div
+          className="absolute top-4 left-4 z-10 flex gap-0.5 bg-muted rounded-lg p-0.5 border"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={transition(3)}
+        >
           <button
             onClick={() => setClockMode("analog")}
             className={`px-2.5 py-1.5 rounded-md transition-all duration-200 flex items-center justify-center w-14 ${
@@ -61,24 +96,56 @@ const Stopwatch = () => {
           >
             <span className="text-xs font-mono font-medium">MM:SS</span>
           </button>
-        </div>
+        </motion.div>
 
         <div className="p-8">
-          {clockMode === "analog" ? (
-            <AnalogClock elapsedTime={elapsedTime} />
-          ) : (
-            <DigitalClock elapsedTime={elapsedTime} />
-          )}
+          <AnimatePresence mode="wait">
+            {clockMode === "analog" ? (
+              <motion.div
+                key="analog"
+                initial={initial}
+                animate={animate}
+                exit={exit}
+                transition={
+                  isInitialLoad
+                    ? transition(3)
+                    : { duration: 0.3, ease: "easeOut" }
+                }
+              >
+                <AnalogClock
+                  elapsedTime={elapsedTime}
+                  isInitialLoad={isInitialLoad}
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="digital"
+                initial={initial}
+                animate={animate}
+                exit={exit}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                <DigitalClock elapsedTime={elapsedTime} />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
 
-      <ControlPanel
-        isRunning={isRunning}
-        disabled={elapsedTime === 0}
-        toggleTimer={toggleTimer}
-        addLap={addLap}
-        resetTimer={resetTimer}
-      />
+      <motion.div
+        className="space-y-6"
+        initial={initial}
+        animate={animate}
+        transition={transition(2)}
+      >
+        <ControlPanel
+          isRunning={isRunning}
+          disabled={elapsedTime === 0}
+          toggleTimer={toggleTimer}
+          addLap={addLap}
+          resetTimer={resetTimer}
+        />
+      </motion.div>
 
       <LapTimes lapTimes={lapTimes} formatTime={formatTime} />
     </div>

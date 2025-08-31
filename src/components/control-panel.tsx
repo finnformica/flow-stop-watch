@@ -70,7 +70,7 @@ const ControlPanel = ({
   }
 
   return (
-    <div className="space-y-6">
+    <>
       <div className="flex items-center justify-center gap-6">
         <button
           onClick={toggleTimer}
@@ -100,7 +100,7 @@ const ControlPanel = ({
           </span>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
