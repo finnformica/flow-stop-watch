@@ -1,7 +1,9 @@
 "use client";
 
-import { useTheme } from "@/contexts/theme-context";
 import { Moon, Sun } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+
+import { useTheme } from "@/contexts/theme-context";
 
 const ThemeToggle = () => {
   const { setTheme, resolvedTheme } = useTheme();
@@ -10,13 +12,36 @@ const ThemeToggle = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
 
+  const initial = { rotate: 45, opacity: 0 };
+  const animate = { rotate: 0, opacity: 1 };
+  const exit = { rotate: -45, opacity: 0 };
+
+  const divProps = (key: string) => ({
+    key,
+    exit,
+    initial,
+    animate,
+    style: { originY: 1, originX: 0.5 },
+    transition: { duration: 0.3, ease: "easeInOut" as const },
+  });
+
   return (
     <button
       onClick={toggleTheme}
       className="flex items-center gap-2 px-3 py-1.5 bg-muted hover:bg-card-hover text-foreground hover:text-muted-foreground rounded-lg border transition-all duration-200"
       title={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} theme`}
     >
-      {resolvedTheme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+      <AnimatePresence mode="wait">
+        {resolvedTheme === "dark" ? (
+          <motion.div {...divProps("sun")}>
+            <Sun size={16} />
+          </motion.div>
+        ) : (
+          <motion.div {...divProps("moon")}>
+            <Moon size={16} />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <span className="hidden sm:inline">
         {resolvedTheme === "dark" ? "Light" : "Dark"}
       </span>
