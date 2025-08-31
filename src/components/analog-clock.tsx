@@ -59,10 +59,6 @@ const AnalogClock = ({
     },
   };
 
-  const handTransitionStyle = {
-    transition: isInitialLoad ? "none" : "transform 75ms linear",
-  };
-
   return (
     <div className="relative w-80 h-80 mx-auto select-none">
       {/* Clock face */}
@@ -140,7 +136,7 @@ const AnalogClock = ({
               marginLeft: "-2px",
               marginTop: "-100px",
               transform: `rotate(${minuteAngle}deg)`,
-              ...handTransitionStyle,
+              transition: "none",
             }}
           />
         )}
@@ -170,7 +166,7 @@ const AnalogClock = ({
               marginLeft: "-1px",
               marginTop: "-120px",
               transform: `rotate(${secondAngle}deg)`,
-              ...handTransitionStyle,
+              transition: "none",
             }}
           />
         )}
@@ -187,6 +183,7 @@ const AnalogClock = ({
               transform: `rotate(${msAngle}deg)`,
               backgroundColor: "var(--accent)",
               opacity: "0.8",
+              transition: "none",
             }}
             variants={handVariants}
             initial="hidden"
