@@ -33,9 +33,9 @@ const useStopwatch = () => {
         split:
           lapTimes.length === 0
             ? elapsedTime
-            : elapsedTime - lapTimes[lapTimes.length - 1].cumulative,
+            : elapsedTime - lapTimes[0].cumulative,
       };
-      setLapTimes((prev) => [...prev, newLap]);
+      setLapTimes((prev) => [newLap, ...prev]);
     }
   }, [isRunning, elapsedTime, lapTimes]);
 
