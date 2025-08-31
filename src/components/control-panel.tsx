@@ -1,4 +1,44 @@
-import { Flag, Pause, Play, RotateCcw, Square } from "lucide-react";
+import { Flag, Play, RotateCcw, Square } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+
+type ButtonProps = {
+  onClick: () => void;
+  disabled?: boolean;
+  variant: "primary" | "secondary" | "destructive" | "success";
+  icon: React.ReactNode;
+  children: React.ReactNode;
+};
+
+const Button = ({
+  onClick,
+  disabled = false,
+  variant,
+  icon,
+  children,
+}: ButtonProps) => {
+  const baseClasses =
+    "flex items-center gap-3 px-6 py-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-card disabled:opacity-50 disabled:cursor-not-allowed";
+
+  const variantClasses = {
+    primary: "bg-accent text-white hover:bg-accent-hover focus:ring-accent",
+    secondary:
+      "bg-muted text-foreground hover:bg-card-hover hover:text-muted-foreground focus:ring-accent",
+    destructive:
+      "bg-destructive text-white hover:opacity-90 focus:ring-destructive",
+    success: "bg-success/80 text-white hover:opacity-90 focus:ring-success",
+  };
+
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`${baseClasses} ${variantClasses[variant]}`}
+    >
+      {icon}
+      {children}
+    </button>
+  );
+};
 
 const ControlPanel = ({
   isRunning,
@@ -13,92 +53,90 @@ const ControlPanel = ({
   addLap: () => void;
   resetTimer: () => void;
 }) => {
-  if (isRunning) {
-    return (
-      <>
-        {/* Running Controls */}
-        <div className="flex items-center justify-center gap-4">
-          <button
-            onClick={toggleTimer}
-            className={`flex items-center gap-3 px-6 py-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-card ${
-              isRunning
-                ? "bg-destructive text-white hover:opacity-90 focus:ring-destructive"
-                : "bg-accent text-white hover:bg-accent-hover focus:ring-accent"
-            }`}
-          >
-            {isRunning ? <Pause size={20} /> : <Play size={20} />}
-            {isRunning ? "Pause" : "Resume"}
-          </button>
+  const keyboardShortcuts = [
+    {
+      key: "Space",
+      label: "Start/Pause",
+    },
+    ...(isRunning
+      ? [
+          {
+            key: "L",
+            label: "Lap (while running)",
+          },
+        ]
+      : []),
+  ];
 
-          <button
-            onClick={addLap}
-            disabled={!isRunning}
-            className="flex items-center gap-3 px-6 py-3 bg-success/80 text-white rounded-xl hover:opacity-90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md font-medium focus:outline-none focus:ring-2 focus:ring-success focus:ring-offset-2 focus:ring-offset-card"
-          >
-            <Flag size={20} />
-            Lap
-          </button>
-
-          <button
-            onClick={resetTimer}
-            className="flex items-center gap-3 px-6 py-3 bg-muted text-foreground rounded-xl hover:text-muted-foreground transition-all duration-200 shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-card"
-          >
-            <Square size={20} />
-            Stop
-          </button>
-        </div>
-
-        {/* Keyboard Shortcuts */}
-        <div className="text-center py-4 border-y border-border">
-          <div className="inline-flex items-center gap-6 text-sm">
-            <span className="flex items-center gap-2">
-              <kbd className="px-2 py-1 bg-muted text-muted-foreground rounded text-xs font-mono border">
-                Space
-              </kbd>
-              <span className="text-muted-foreground">Start/Pause</span>
-            </span>
-            <span className="flex items-center gap-2">
-              <kbd className="px-2 py-1 bg-muted text-muted-foreground rounded text-xs font-mono border">
-                L
-              </kbd>
-              <span className="text-muted-foreground">Lap (while running)</span>
-            </span>
-          </div>
-        </div>
-      </>
-    );
-  }
+  const buttons = isRunning
+    ? [
+        {
+          onClick: toggleTimer,
+          variant: "destructive" as const,
+          icon: <Square size={20} />,
+          children: "Stop",
+        },
+        {
+          onClick: addLap,
+          disabled: !isRunning,
+          variant: "success" as const,
+          icon: <Flag size={20} />,
+          children: "Lap",
+        },
+      ]
+    : [
+        {
+          onClick: toggleTimer,
+          variant: "primary" as const,
+          icon: <Play size={20} />,
+          children: "Start",
+        },
+        {
+          onClick: resetTimer,
+          disabled,
+          variant: "secondary" as const,
+          icon: <RotateCcw size={20} />,
+          children: "Reset",
+        },
+      ];
 
   return (
     <>
-      <div className="flex items-center justify-center gap-6">
-        <button
-          onClick={toggleTimer}
-          className="flex items-center gap-3 px-6 py-3 bg-accent text-white rounded-xl hover:bg-accent-hover transition-all duration-200 shadow-sm hover:shadow-md font-medium focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={isRunning ? "running" : "stopped"}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          className="flex items-center justify-center gap-4"
         >
-          <Play size={20} />
-          Start
-        </button>
-        <button
-          onClick={resetTimer}
-          disabled={disabled}
-          className="flex items-center gap-3 px-6 py-3 bg-muted text-foreground rounded-xl hover:bg-card-hover hover:text-muted-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-medium focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
-        >
-          <RotateCcw size={20} />
-          Reset
-        </button>
-      </div>
+          {buttons.map((button, index) => (
+            <Button key={index} {...button} />
+          ))}
+        </motion.div>
+      </AnimatePresence>
 
       {/* Keyboard Shortcuts */}
-      <div className="text-center py-4 border-y border-border">
-        <div className="inline-flex items-center gap-6 text-sm">
-          <span className="flex items-center gap-2">
+      <div className="w-full flex items-center justify-center gap-6 py-4 border-y border-border text-sm">
+        {keyboardShortcuts.map((shortcut) => (
+          <motion.span
+            layout
+            key={shortcut.key}
+            className="flex items-center gap-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              layout: { duration: 0.3, ease: "easeInOut" },
+              opacity: { duration: 0.2, delay: 0.2 },
+            }}
+          >
             <kbd className="px-2 py-1 bg-muted text-muted-foreground rounded text-xs font-mono border">
-              Space
+              {shortcut.key}
             </kbd>
-            <span className="text-muted-foreground">Start/Pause</span>
-          </span>
-        </div>
+            <span className="text-muted-foreground">{shortcut.label}</span>
+          </motion.span>
+        ))}
       </div>
     </>
   );
