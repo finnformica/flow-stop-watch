@@ -17,14 +17,13 @@ const ThemeToggle = () => {
   const animate = { rotate: 0, opacity: 1 };
   const exit = { rotate: -45, opacity: 0 };
 
-  const divProps = (key: string) => ({
-    key,
+  const divProps = {
     exit,
     initial,
     animate,
     style: { originY: 1, originX: 0.5 },
     transition: { duration: 0.3, ease: "easeInOut" as const },
-  });
+  };
 
   return (
     <button
@@ -34,18 +33,27 @@ const ThemeToggle = () => {
     >
       <AnimatePresence mode="wait">
         {resolvedTheme === "dark" ? (
-          <motion.div {...divProps("sun")}>
+          <motion.div key="sun" {...divProps}>
             <Sun size={16} />
           </motion.div>
         ) : (
-          <motion.div {...divProps("moon")}>
+          <motion.div key="moon" {...divProps}>
             <Moon size={16} />
           </motion.div>
         )}
       </AnimatePresence>
-      <span className="hidden sm:inline">
-        {resolvedTheme === "dark" ? "Light" : "Dark"}
-      </span>
+      <AnimatePresence mode="wait">
+        <motion.span
+          key={resolvedTheme}
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -5 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
+          className="hidden sm:inline"
+        >
+          {resolvedTheme === "dark" ? "Light" : "Dark"}
+        </motion.span>
+      </AnimatePresence>
     </button>
   );
 };
