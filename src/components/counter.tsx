@@ -42,7 +42,10 @@ function Digit({
   digitStyle: React.CSSProperties;
 }) {
   const valueRoundedToPlace = Math.floor(value / place);
-  const animatedValue = useSpring(valueRoundedToPlace);
+  const animatedValue = useSpring(valueRoundedToPlace, {
+    damping: 30,
+    stiffness: 200
+  });
 
   useEffect(() => {
     animatedValue.set(valueRoundedToPlace);

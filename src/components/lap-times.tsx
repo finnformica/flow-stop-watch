@@ -31,8 +31,8 @@ const LapTimes = ({
           onClick={onToggleTimer}
           className={`flex items-center gap-3 px-6 py-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md font-medium focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-card ${
             isRunning
-              ? "bg-destructive dark:bg-destructive/80 text-white hover:opacity-90"
-              : "bg-accent dark:bg-accent/80 text-white hover:bg-accent-hover"
+              ? "bg-destructive text-white hover:opacity-90"
+              : "bg-accent text-white hover:bg-accent-hover"
           }`}
         >
           {isRunning ? <Pause size={20} /> : <Play size={20} />}
@@ -146,7 +146,7 @@ const LapTimes = ({
                       </div>
                       <div className="w-20 text-right">
                         <div
-                          className={`text-sm font-mono ${
+                          className={`text-sm ${
                             isFastest
                               ? "text-success"
                               : isSlowest
@@ -158,7 +158,7 @@ const LapTimes = ({
                         </div>
                       </div>
                       <div className="w-24 text-right">
-                        <div className="text-sm font-mono text-muted-foreground">
+                        <div className="text-sm text-muted-foreground">
                           {formatTime(lap.cumulative)}
                         </div>
                       </div>

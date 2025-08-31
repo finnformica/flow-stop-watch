@@ -7,39 +7,6 @@ const useStopwatch = () => {
   const [startTime, setStartTime] = useState(0);
   const [lapTimes, setLapTimes] = useState<LapTime[]>([]);
 
-  // High precision timing
-  useEffect(() => {
-    let intervalId: NodeJS.Timeout | undefined;
-
-    if (isRunning) {
-      intervalId = setInterval(() => {
-        setElapsedTime(performance.now() - startTime);
-      }, 10); // Update every 10ms for smooth animation
-    }
-
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
-  }, [isRunning, startTime]);
-
-  // Keyboard controls
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.code === "Space") {
-        e.preventDefault();
-        toggleTimer();
-      } else if (e.code === "KeyL" && isRunning) {
-        e.preventDefault();
-        addLap();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [isRunning]);
-
   const toggleTimer = useCallback(() => {
     if (isRunning) {
       // Pausing - just stop the timer
@@ -84,6 +51,39 @@ const useStopwatch = () => {
       .toString()
       .padStart(2, "0")}.${milliseconds.toString().padStart(2, "0")}`;
   };
+
+  // Update the elapsed time
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout | undefined;
+
+    if (isRunning) {
+      intervalId = setInterval(() => {
+        setElapsedTime(performance.now() - startTime);
+      }, 10); // Update every 10ms - balance smooth animation and client-side performance
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isRunning, startTime]);
+
+  // Keyboard controls
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        toggleTimer();
+      } else if (e.code === "KeyL" && isRunning) {
+        e.preventDefault();
+        addLap();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [addLap, isRunning, toggleTimer]);
 
   return {
     elapsedTime,

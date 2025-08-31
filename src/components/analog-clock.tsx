@@ -11,7 +11,7 @@ const AnalogClock = ({ elapsedTime }: { elapsedTime: number }) => {
   const msAngle = milliseconds * 360; // Smooth millisecond hand
 
   return (
-    <div className="relative w-80 h-80 mx-auto">
+    <div className="relative w-80 h-80 mx-auto select-none">
       {/* Clock face */}
       <div className="absolute inset-0 rounded-full border-2 border-border bg-card shadow-lg dark:shadow-none">
         {/* Minute markers */}
@@ -39,7 +39,7 @@ const AnalogClock = ({ elapsedTime }: { elapsedTime: number }) => {
           return (
             <div
               key={i}
-              className="absolute text-base font-medium text-foreground flex items-center justify-center w-10 h-10"
+              className="absolute text-base font-medium font-mono text-foreground flex items-center justify-center w-10 h-10"
               style={{
                 left: `calc(50% + ${x}px - 20px)`,
                 top: `calc(50% + ${y}px - 20px)`,

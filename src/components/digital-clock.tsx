@@ -13,13 +13,12 @@ const DigitalClock = ({ elapsedTime }: { elapsedTime: number }) => {
   // Theme-based colors
   const isDark = resolvedTheme === "dark";
   const textColor = isDark ? "#e9e9e7" : "#37352f";
-  const mutedTextColor = isDark ? "#9b9a97" : "#6b7280";
   const containerBg = isDark ? "#2f2f2f" : "#f9fafb";
   const gradientFrom = containerBg;
 
   return (
-    <div className="flex items-center justify-center w-80 h-80 mx-auto">
-      <div className="bg-card rounded-2xl px-8 py-6 flex items-center gap-6">
+    <div className="flex items-center justify-center w-80 h-80 mx-auto select-none font-mono">
+      <div className="flex items-center gap-2">
         {/* Minutes */}
         <div className="flex flex-col items-center">
           <Counter
@@ -46,7 +45,13 @@ const DigitalClock = ({ elapsedTime }: { elapsedTime: number }) => {
           </span>
         </div>
 
-        <span className="text-3xl font-light text-muted-foreground">:</span>
+        {/* Colon - positioned to center between counter boxes only */}
+        <div className="flex flex-col items-center">
+          <span className="text-3xl font-light text-muted-foreground h-16 flex items-center">
+            :
+          </span>
+          <div className="h-6"></div> {/* Spacer to match label height */}
+        </div>
 
         {/* Seconds */}
         <div className="flex flex-col items-center">
@@ -74,24 +79,30 @@ const DigitalClock = ({ elapsedTime }: { elapsedTime: number }) => {
           </span>
         </div>
 
-        <span className="text-3xl font-light text-muted-foreground">.</span>
+        {/* Colon - positioned to center between counter boxes only */}
+        <div className="flex flex-col items-center">
+          <span className="text-3xl font-light text-muted-foreground h-16 flex items-center">
+            :
+          </span>
+          <div className="h-6"></div> {/* Spacer to match label height */}
+        </div>
 
-        {/* Centiseconds */}
+        {/* Milliseconds */}
         <div className="flex flex-col items-center">
           <Counter
             value={centiseconds}
-            fontSize={32}
-            padding={6}
+            fontSize={48}
+            padding={8}
             places={[10, 1]}
             gap={2}
-            borderRadius={6}
-            horizontalPadding={8}
-            textColor={mutedTextColor}
+            borderRadius={8}
+            horizontalPadding={12}
+            textColor={textColor}
             fontWeight="300"
-            containerStyle={{ background: containerBg, borderRadius: "6px" }}
+            containerStyle={{ background: containerBg, borderRadius: "8px" }}
             counterStyle={{}}
             digitStyle={{}}
-            gradientHeight={8}
+            gradientHeight={12}
             gradientFrom={gradientFrom}
             gradientTo="transparent"
             topGradientStyle={{}}

@@ -10,8 +10,10 @@
   --card-hover: #f7f6f3;
   --accent: #2383e2;
   --accent-hover: #1a6ec4;
-  --destructive: #eb5757;
+  --destructive: #dc2626;
   --success: #0f7b0f;
+  --selection-bg: #000000;
+  --selection-text: #ffffff;
 }
 
 .dark {
@@ -26,6 +28,8 @@
   --accent-hover: #1a6ec4;
   --destructive: #ff6b6b;
   --success: #51cf66;
+  --selection-bg: #ffffff;
+  --selection-text: #000000;
 }
 
 @theme inline {
@@ -82,4 +86,15 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--foreground);
+}
+
+/* Text selection styling */
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
+}
+
+::-moz-selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
 }
