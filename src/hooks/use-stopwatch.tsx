@@ -33,13 +33,13 @@ const useStopwatch = () => {
         split:
           lapTimes.length === 0
             ? elapsedTime
-            : elapsedTime - lapTimes[lapTimes.length - 1].cumulative,
+            : elapsedTime - lapTimes[0].cumulative,
       };
-      setLapTimes((prev) => [...prev, newLap]);
+      setLapTimes((prev) => [newLap, ...prev]);
     }
   }, [isRunning, elapsedTime, lapTimes]);
 
-  const formatTime = (ms: number | null) => {
+  const formatTime = useCallback((ms: number | null) => {
     if (ms === null) return "00:00:00";
 
     const totalSeconds = Math.floor(ms / 1000);
@@ -50,7 +50,7 @@ const useStopwatch = () => {
     return `${minutes.toString().padStart(2, "0")}:${seconds
       .toString()
       .padStart(2, "0")}:${milliseconds.toString().padStart(2, "0")}`;
-  };
+  }, []);
 
   // Update the elapsed time
   useEffect(() => {

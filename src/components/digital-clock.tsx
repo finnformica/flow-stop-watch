@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import { useTheme } from "@/contexts/theme-context";
 import Counter from "./counter";
@@ -82,4 +82,4 @@ const DigitalClock = ({ elapsedTime }: { elapsedTime: number }) => {
   );
 };
 
-export default DigitalClock;
+export default memo(DigitalClock);
