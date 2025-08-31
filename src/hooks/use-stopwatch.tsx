@@ -40,7 +40,7 @@ const useStopwatch = () => {
   }, [isRunning, elapsedTime, lapTimes]);
 
   const formatTime = (ms: number | null) => {
-    if (ms === null) return "00:00.00";
+    if (ms === null) return "00:00:00";
 
     const totalSeconds = Math.floor(ms / 1000);
     const minutes = Math.floor(totalSeconds / 60);
@@ -49,7 +49,7 @@ const useStopwatch = () => {
 
     return `${minutes.toString().padStart(2, "0")}:${seconds
       .toString()
-      .padStart(2, "0")}.${milliseconds.toString().padStart(2, "0")}`;
+      .padStart(2, "0")}:${milliseconds.toString().padStart(2, "0")}`;
   };
 
   // Update the elapsed time

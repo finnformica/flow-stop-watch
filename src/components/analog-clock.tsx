@@ -5,10 +5,9 @@ const AnalogClock = ({ elapsedTime }: { elapsedTime: number }) => {
   const seconds = (totalSeconds % 60) / 60;
   const milliseconds = (elapsedTime % 1000) / 1000;
 
-  // Calculate angles for smooth sweeping motion
   const minuteAngle = (minutes % 60) * 6; // 360/60 = 6 degrees per minute
-  const secondAngle = seconds * 360; // Full rotation per minute
-  const msAngle = milliseconds * 360; // Smooth millisecond hand
+  const secondAngle = seconds * 360;
+  const msAngle = milliseconds * 360;
 
   return (
     <div className="relative w-80 h-80 mx-auto select-none">
@@ -32,14 +31,14 @@ const AnalogClock = ({ elapsedTime }: { elapsedTime: number }) => {
 
         {/* Numbers for 10-minute intervals */}
         {Array.from({ length: 6 }, (_, i) => {
-          const angle = i * 60 - 90; // Start from top
-          const radius = 110; // Moved closer to center to avoid overlap
+          const angle = i * 60 - 90;
+          const radius = 110;
           const x = Math.cos((angle * Math.PI) / 180) * radius;
           const y = Math.sin((angle * Math.PI) / 180) * radius;
           return (
             <div
               key={i}
-              className="absolute text-base font-medium font-mono text-foreground flex items-center justify-center w-10 h-10"
+              className="absolute text-base font-medium font-mono text-foreground flex items-center justify-center w-10 h-10 z-50"
               style={{
                 left: `calc(50% + ${x}px - 20px)`,
                 top: `calc(50% + ${y}px - 20px)`,
@@ -51,11 +50,11 @@ const AnalogClock = ({ elapsedTime }: { elapsedTime: number }) => {
         })}
 
         {/* Center dot */}
-        <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-accent rounded-full transform -translate-x-1/2 -translate-y-1/2 z-10" />
+        <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-accent rounded-full transform -translate-x-1/2 -translate-y-1/2 z-40" />
 
         {/* Minute hand */}
         <div
-          className="absolute top-1/2 left-1/2 origin-bottom bg-accent rounded-full transition-transform duration-75 ease-out z-20"
+          className="absolute top-1/2 left-1/2 origin-bottom bg-accent rounded-full transition-transform duration-75 ease-out z-10"
           style={{
             width: "4px",
             height: "100px",
@@ -67,7 +66,7 @@ const AnalogClock = ({ elapsedTime }: { elapsedTime: number }) => {
 
         {/* Second hand */}
         <div
-          className="absolute top-1/2 left-1/2 origin-bottom bg-destructive rounded-full transition-transform duration-75 ease-out z-30"
+          className="absolute top-1/2 left-1/2 origin-bottom bg-destructive rounded-full transition-transform duration-75 ease-out z-20"
           style={{
             width: "2px",
             height: "120px",
@@ -79,7 +78,7 @@ const AnalogClock = ({ elapsedTime }: { elapsedTime: number }) => {
 
         {/* Millisecond hand - thinner and slightly different color */}
         <div
-          className="absolute top-1/2 left-1/2 origin-bottom rounded-full z-40"
+          className="absolute top-1/2 left-1/2 origin-bottom rounded-full z-30"
           style={{
             width: "1px",
             height: "140px",
@@ -87,7 +86,7 @@ const AnalogClock = ({ elapsedTime }: { elapsedTime: number }) => {
             marginTop: "-140px",
             transform: `rotate(${msAngle}deg)`,
             transition: "none", // No transition for smooth millisecond movement
-            backgroundColor: "var(--accent)", // Using CSS variable for orange-like accent color
+            backgroundColor: "var(--accent)",
             opacity: "0.8",
           }}
         />
