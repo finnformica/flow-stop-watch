@@ -57,13 +57,13 @@ const ControlPanel = ({
   const keyboardShortcuts = [
     {
       key: "Space",
-      label: "Start/Pause",
+      label: "Start/Stop",
     },
     ...(isRunning
       ? [
           {
             key: "L",
-            label: "Lap (while running)",
+            label: "Lap",
           },
         ]
       : []),

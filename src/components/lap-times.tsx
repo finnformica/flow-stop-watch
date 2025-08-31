@@ -21,6 +21,28 @@ const LapTimeItem = ({
   const isSlowest = lap.split === slowestLap;
   const barWidth = (lap.split / maxSplit) * 100;
 
+  const getLapColors = () => {
+    if (isFastest) {
+      return {
+        barColor: "bg-success",
+        textColor: "text-success",
+      };
+    }
+
+    if (isSlowest) {
+      return {
+        barColor: "bg-destructive",
+        textColor: "text-destructive",
+      };
+    }
+    return {
+      barColor: "bg-accent",
+      textColor: "text-foreground",
+    };
+  };
+
+  const { barColor, textColor } = getLapColors();
+
   return (
     <motion.div
       className="flex items-center gap-4 py-2 px-3 mb-1"
@@ -34,32 +56,16 @@ const LapTimeItem = ({
         Lap {lap.id}
       </div>
       <div className="flex-1 flex items-center gap-3">
-        <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden border">
+        <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
           <motion.div
-            className={`h-full ${
-              isFastest
-                ? "bg-success"
-                : isSlowest
-                ? "bg-destructive"
-                : "bg-accent"
-            }`}
+            className={`h-full rounded-full ${barColor}`}
             initial={{ width: 0 }}
             animate={{ width: `${barWidth}%` }}
             transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
           />
         </div>
         <div className="w-20 text-right">
-          <div
-            className={`text-sm ${
-              isFastest
-                ? "text-success"
-                : isSlowest
-                ? "text-destructive"
-                : "text-foreground"
-            }`}
-          >
-            {formatTime(lap.split)}
-          </div>
+          <div className={`text-sm ${textColor}`}>{formatTime(lap.split)}</div>
         </div>
         <div className="w-24 text-right">
           <div className="text-sm text-muted-foreground">
