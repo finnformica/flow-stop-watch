@@ -1,3 +1,5 @@
+// Code from https://reactbits.dev/components/counter
+
 import { motion, MotionValue, useSpring, useTransform } from "motion/react";
 import { useEffect } from "react";
 

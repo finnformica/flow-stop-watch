@@ -2,6 +2,7 @@ import { Clock, Timer } from "lucide-react";
 import { useState } from "react";
 
 import useStopwatch from "@/hooks/use-stopwatch";
+import ThemeToggle from "./theme-toggle";
 
 import AnalogClock from "./analog-clock";
 import ControlPanel from "./control-panel";
@@ -22,78 +23,74 @@ const Stopwatch = () => {
   const [clockMode, setClockMode] = useState("analog");
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-background transition-colors duration-200">
+      <div className="max-w-6xl mx-auto p-8 space-y-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-light text-gray-900 mb-4">Stopwatch</h1>
-          <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-semibold text-foreground mb-2">Stopwatch</h1>
+            <p className="text-muted-foreground">Track your time with precision</p>
+          </div>
+          <ThemeToggle />
+        </div>
+
+        {/* Main Clock Display Card */}
+        <div className="bg-card border border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden relative">
+          {/* Clock Mode Toggle - Top Left */}
+          <div className="absolute top-4 left-4 z-10 flex gap-1 bg-muted rounded-lg p-1 border">
             <button
               onClick={() => setClockMode("analog")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+              className={`p-2 rounded-md transition-all duration-200 ${
                 clockMode === "analog"
-                  ? "bg-blue-100 text-blue-700 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-card-hover"
               }`}
+              title="Analog clock"
             >
-              <Clock size={20} />
-              Analogue
+              <Clock size={16} />
             </button>
             <button
               onClick={() => setClockMode("digital")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+              className={`p-2 rounded-md transition-all duration-200 ${
                 clockMode === "digital"
-                  ? "bg-blue-100 text-blue-700 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-card-hover"
               }`}
+              title="Digital clock"
             >
-              <Timer size={20} />
-              Digital
+              <Timer size={16} />
             </button>
+          </div>
+          
+          <div className="p-8">
+            {clockMode === "analog" ? (
+              <AnalogClock elapsedTime={elapsedTime} />
+            ) : (
+              <DigitalClock elapsedTime={elapsedTime} />
+            )}
           </div>
         </div>
 
-        {/* Main Clock Display */}
-        <div className="mb-12">
-          {clockMode === "analog" ? (
-            <AnalogClock elapsedTime={elapsedTime} />
-          ) : (
-            <DigitalClock elapsedTime={elapsedTime} />
-          )}
-        </div>
-
-        {/* Control Panel or Lap Times */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 transition-all duration-300">
-          {!isRunning && lapTimes.length === 0 ? (
-            <ControlPanel
-              onStart={toggleTimer}
-              onReset={resetTimer}
-              disabled={elapsedTime === 0}
-            />
-          ) : (
-            <LapTimes
-              isRunning={isRunning}
-              lapTimes={lapTimes}
-              onToggleTimer={toggleTimer}
-              onAddLap={addLap}
-              onReset={resetTimer}
-              formatTime={formatTime}
-            />
-          )}
-        </div>
-
-        {/* Keyboard Shortcuts Info */}
-        <div className="mt-8 text-center text-sm text-gray-500">
-          <span className="inline-flex items-center gap-4">
-            <kbd className="px-2 py-1 bg-gray-100 rounded text-xs font-mono">
-              Space
-            </kbd>
-            <span>Start/Pause</span>
-            <kbd className="px-2 py-1 bg-gray-100 rounded text-xs font-mono">
-              L
-            </kbd>
-            <span>Lap (while running)</span>
-          </span>
+        {/* Control Panel or Lap Times Card */}
+        <div className="bg-card border border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
+          <div className="p-8">
+            {!isRunning && lapTimes.length === 0 ? (
+              <ControlPanel
+                onStart={toggleTimer}
+                onReset={resetTimer}
+                disabled={elapsedTime === 0}
+              />
+            ) : (
+              <LapTimes
+                isRunning={isRunning}
+                lapTimes={lapTimes}
+                onToggleTimer={toggleTimer}
+                onAddLap={addLap}
+                onReset={resetTimer}
+                formatTime={formatTime}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>

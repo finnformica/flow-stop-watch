@@ -1,15 +1,25 @@
+import { useTheme } from "@/contexts/theme-context";
 import Counter from "./counter";
 
 const DigitalClock = ({ elapsedTime }: { elapsedTime: number }) => {
+  const { resolvedTheme } = useTheme();
+
   // Convert elapsed time to minutes, seconds, and centiseconds for the counter
   const totalMs = Math.floor(elapsedTime);
   const minutes = Math.floor(totalMs / 60000);
   const seconds = Math.floor((totalMs % 60000) / 1000);
   const centiseconds = Math.floor((totalMs % 1000) / 10);
 
+  // Theme-based colors
+  const isDark = resolvedTheme === "dark";
+  const textColor = isDark ? "#e9e9e7" : "#37352f";
+  const mutedTextColor = isDark ? "#9b9a97" : "#6b7280";
+  const containerBg = isDark ? "#2f2f2f" : "#f9fafb";
+  const gradientFrom = containerBg;
+
   return (
     <div className="flex items-center justify-center w-80 h-80 mx-auto">
-      <div className="bg-white rounded-2xl px-8 py-6 shadow-lg border border-gray-100 flex items-center gap-6">
+      <div className="bg-card rounded-2xl px-8 py-6 flex items-center gap-6">
         {/* Minutes */}
         <div className="flex flex-col items-center">
           <Counter
@@ -20,21 +30,23 @@ const DigitalClock = ({ elapsedTime }: { elapsedTime: number }) => {
             gap={2}
             borderRadius={8}
             horizontalPadding={12}
-            textColor="#1f2937"
+            textColor={textColor}
             fontWeight="300"
-            containerStyle={{ background: "#f9fafb", borderRadius: "8px" }}
+            containerStyle={{ background: containerBg, borderRadius: "8px" }}
             counterStyle={{}}
             digitStyle={{}}
             gradientHeight={12}
-            gradientFrom="#f9fafb"
+            gradientFrom={gradientFrom}
             gradientTo="transparent"
             topGradientStyle={{}}
             bottomGradientStyle={{}}
           />
-          <span className="text-xs text-gray-500 mt-2 font-medium">MIN</span>
+          <span className="text-xs text-muted-foreground mt-2 font-medium">
+            MIN
+          </span>
         </div>
 
-        <span className="text-3xl font-light text-gray-400">:</span>
+        <span className="text-3xl font-light text-muted-foreground">:</span>
 
         {/* Seconds */}
         <div className="flex flex-col items-center">
@@ -46,21 +58,23 @@ const DigitalClock = ({ elapsedTime }: { elapsedTime: number }) => {
             gap={2}
             borderRadius={8}
             horizontalPadding={12}
-            textColor="#1f2937"
+            textColor={textColor}
             fontWeight="300"
-            containerStyle={{ background: "#f9fafb", borderRadius: "8px" }}
+            containerStyle={{ background: containerBg, borderRadius: "8px" }}
             counterStyle={{}}
             digitStyle={{}}
             gradientHeight={12}
-            gradientFrom="#f9fafb"
+            gradientFrom={gradientFrom}
             gradientTo="transparent"
             topGradientStyle={{}}
             bottomGradientStyle={{}}
           />
-          <span className="text-xs text-gray-500 mt-2 font-medium">SEC</span>
+          <span className="text-xs text-muted-foreground mt-2 font-medium">
+            SEC
+          </span>
         </div>
 
-        <span className="text-3xl font-light text-gray-400">.</span>
+        <span className="text-3xl font-light text-muted-foreground">.</span>
 
         {/* Centiseconds */}
         <div className="flex flex-col items-center">
@@ -72,18 +86,20 @@ const DigitalClock = ({ elapsedTime }: { elapsedTime: number }) => {
             gap={2}
             borderRadius={6}
             horizontalPadding={8}
-            textColor="#6b7280"
+            textColor={mutedTextColor}
             fontWeight="300"
-            containerStyle={{ background: "#f9fafb", borderRadius: "6px" }}
+            containerStyle={{ background: containerBg, borderRadius: "6px" }}
             counterStyle={{}}
             digitStyle={{}}
             gradientHeight={8}
-            gradientFrom="#f9fafb"
+            gradientFrom={gradientFrom}
             gradientTo="transparent"
             topGradientStyle={{}}
             bottomGradientStyle={{}}
           />
-          <span className="text-xs text-gray-500 mt-2 font-medium">CS</span>
+          <span className="text-xs text-muted-foreground mt-2 font-medium">
+            MS
+          </span>
         </div>
       </div>
     </div>

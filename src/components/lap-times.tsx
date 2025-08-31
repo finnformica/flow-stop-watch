@@ -29,10 +29,10 @@ const LapTimes = ({
       <div className="flex items-center justify-center gap-4">
         <button
           onClick={onToggleTimer}
-          className={`flex items-center gap-3 px-6 py-3 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg font-medium ${
+          className={`flex items-center gap-3 px-6 py-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md font-medium focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-card ${
             isRunning
-              ? "bg-orange-500 text-white hover:bg-orange-600"
-              : "bg-blue-600 text-white hover:bg-blue-700"
+              ? "bg-destructive dark:bg-destructive/80 text-white hover:opacity-90"
+              : "bg-accent dark:bg-accent/80 text-white hover:bg-accent-hover"
           }`}
         >
           {isRunning ? <Pause size={20} /> : <Play size={20} />}
@@ -42,7 +42,7 @@ const LapTimes = ({
         <button
           onClick={onAddLap}
           disabled={!isRunning}
-          className="flex items-center gap-3 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg font-medium"
+          className="flex items-center gap-3 px-6 py-3 bg-success/80 text-white rounded-xl hover:opacity-90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md font-medium focus:outline-none focus:ring-2 focus:ring-success focus:ring-offset-2 focus:ring-offset-card"
         >
           <Flag size={20} />
           Lap
@@ -50,37 +50,61 @@ const LapTimes = ({
 
         <button
           onClick={onReset}
-          className="flex items-center gap-3 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
+          className="flex items-center gap-3 px-6 py-3 bg-muted text-foreground rounded-xl hover:text-muted-foreground transition-all duration-200 shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-card"
         >
           <Square size={20} />
           Stop
         </button>
       </div>
 
+      {/* Keyboard Shortcuts */}
+      <div className="text-center py-4 border-y border-border">
+        <div className="inline-flex items-center gap-6 text-sm">
+          <span className="flex items-center gap-2">
+            <kbd className="px-2 py-1 bg-muted text-muted-foreground rounded text-xs font-mono border">
+              Space
+            </kbd>
+            <span className="text-muted-foreground">Start/Pause</span>
+          </span>
+          <span className="flex items-center gap-2">
+            <kbd className="px-2 py-1 bg-muted text-muted-foreground rounded text-xs font-mono border">
+              L
+            </kbd>
+            <span className="text-muted-foreground">Lap (while running)</span>
+          </span>
+        </div>
+      </div>
+
       {/* Lap Times */}
       {lapTimes.length > 0 && (
         <div className="space-y-6">
-          <h3 className="text-xl font-medium text-gray-900 text-center">
+          <h3 className="text-xl font-medium text-foreground text-center">
             Lap Times
           </h3>
 
           {/* Lap Statistics */}
-          <div className="grid grid-cols-3 gap-4 bg-gray-50 rounded-xl p-4">
+          <div className="grid grid-cols-3 gap-4 bg-muted rounded-xl p-4 border">
             <div className="text-center">
-              <div className="text-sm text-gray-500 mb-1">Total Laps</div>
-              <div className="text-lg font-medium text-gray-900">
+              <div className="text-sm text-muted-foreground mb-1">
+                Total Laps
+              </div>
+              <div className="text-lg font-medium text-foreground">
                 {lapTimes.length}
               </div>
             </div>
             <div className="text-center">
-              <div className="text-sm text-gray-500 mb-1">Fastest Lap</div>
-              <div className="text-lg font-medium text-green-600">
+              <div className="text-sm text-muted-foreground mb-1">
+                Fastest Lap
+              </div>
+              <div className="text-lg font-medium text-success">
                 {formatTime(fastestLap)}
               </div>
             </div>
             <div className="text-center">
-              <div className="text-sm text-gray-500 mb-1">Slowest Lap</div>
-              <div className="text-lg font-medium text-red-500">
+              <div className="text-sm text-muted-foreground mb-1">
+                Slowest Lap
+              </div>
+              <div className="text-lg font-medium text-destructive">
                 {formatTime(slowestLap)}
               </div>
             </div>
@@ -88,11 +112,11 @@ const LapTimes = ({
 
           {/* Lap Time Visualization */}
           <div className="space-y-2">
-            <h4 className="text-sm font-medium text-gray-700 mb-3">
+            <h4 className="text-sm font-medium text-foreground mb-3">
               Lap Performance
             </h4>
             <div className="space-y-1">
-              {lapTimes.map((lap, index) => {
+              {lapTimes.map((lap) => {
                 const isFastest = lap.split === fastestLap;
                 const isSlowest =
                   lap.split === slowestLap && lapTimes.length > 1;
@@ -102,20 +126,20 @@ const LapTimes = ({
                 return (
                   <div
                     key={lap.id}
-                    className="flex items-center gap-4 py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex items-center gap-4 py-2 px-3 rounded-lg hover:bg-card-hover transition-colors border border-transparent hover:border-border"
                   >
-                    <div className="w-12 text-sm font-medium text-gray-500">
+                    <div className="w-12 text-sm font-medium text-muted-foreground">
                       Lap {lap.id}
                     </div>
                     <div className="flex-1 flex items-center gap-3">
-                      <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+                      <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden border">
                         <div
                           className={`h-full transition-all duration-500 ease-out ${
                             isFastest
-                              ? "bg-green-500"
+                              ? "bg-success"
                               : isSlowest
-                              ? "bg-red-500"
-                              : "bg-blue-500"
+                              ? "bg-destructive"
+                              : "bg-accent"
                           }`}
                           style={{ width: `${barWidth}%` }}
                         />
@@ -124,17 +148,17 @@ const LapTimes = ({
                         <div
                           className={`text-sm font-mono ${
                             isFastest
-                              ? "text-green-600"
+                              ? "text-success"
                               : isSlowest
-                              ? "text-red-500"
-                              : "text-gray-700"
+                              ? "text-destructive"
+                              : "text-foreground"
                           }`}
                         >
                           {formatTime(lap.split)}
                         </div>
                       </div>
                       <div className="w-24 text-right">
-                        <div className="text-sm font-mono text-gray-500">
+                        <div className="text-sm font-mono text-muted-foreground">
                           {formatTime(lap.cumulative)}
                         </div>
                       </div>
