@@ -1,10 +1,11 @@
-import { Clock } from "lucide-react";
 import { AnimatePresence, Easing, motion } from "motion/react";
 import { useEffect, useState } from "react";
 
 import useStopwatch from "@/hooks/use-stopwatch";
 
+import { ClockMode } from "@/types";
 import AnalogClock from "./analog-clock";
+import ClockToggle from "./clock-toggle";
 import ControlPanel from "./control-panel";
 import DigitalClock from "./digital-clock";
 import LapTimes from "./lap-times";
@@ -21,7 +22,7 @@ const Stopwatch = () => {
     resetTimer,
   } = useStopwatch();
 
-  const [clockMode, setClockMode] = useState("analog");
+  const [clockMode, setClockMode] = useState<ClockMode>("analog");
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
@@ -67,36 +68,11 @@ const Stopwatch = () => {
         animate={animate}
         transition={transition(1)}
       >
-        {/* Clock Mode Toggle - Top Left */}
-        <motion.div
-          className="absolute top-4 left-4 z-10 flex gap-0.5 bg-muted rounded-lg p-0.5 border"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={transition(3)}
-        >
-          <button
-            onClick={() => setClockMode("analog")}
-            className={`px-2.5 py-1.5 rounded-md transition-all duration-200 flex items-center justify-center w-14 ${
-              clockMode === "analog"
-                ? "bg-card text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground hover:bg-card-hover"
-            }`}
-            title="Analog clock"
-          >
-            <Clock size={14} />
-          </button>
-          <button
-            onClick={() => setClockMode("digital")}
-            className={`py-1.5 rounded-md transition-all duration-200 flex items-center justify-center w-14 ${
-              clockMode === "digital"
-                ? "bg-card text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground hover:bg-card-hover"
-            }`}
-            title="Digital clock"
-          >
-            <span className="text-xs font-mono font-medium">MM:SS</span>
-          </button>
-        </motion.div>
+        <ClockToggle
+          clockMode={clockMode}
+          setClockMode={setClockMode}
+          transition={transition}
+        />
 
         <div className="p-8">
           <AnimatePresence mode="wait">

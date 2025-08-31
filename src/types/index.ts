@@ -3,3 +3,5 @@ export type LapTime = {
   split: number;
   cumulative: number;
 };
+
+export type ClockMode = "analog" | "digital";
