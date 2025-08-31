@@ -1,5 +1,6 @@
 import { Flag, Play, RotateCcw, Square } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { memo } from "react";
 
 type ButtonProps = {
   onClick: () => void;
@@ -142,4 +143,4 @@ const ControlPanel = ({
   );
 };
 
-export default ControlPanel;
+export default memo(ControlPanel);

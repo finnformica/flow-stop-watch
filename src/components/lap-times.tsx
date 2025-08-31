@@ -1,5 +1,6 @@
 import { LapTime } from "@/types";
 import { AnimatePresence, motion } from "motion/react";
+import { memo } from "react";
 
 type LapTimeItemProps = {
   lap: LapTime;
@@ -207,4 +208,4 @@ const LapTimes = ({ lapTimes, formatTime }: LapTimesProps) => {
   );
 };
 
-export default LapTimes;
+export default memo(LapTimes);

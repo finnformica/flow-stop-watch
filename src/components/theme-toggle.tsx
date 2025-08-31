@@ -2,6 +2,7 @@
 
 import { Moon, Sun } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { memo } from "react";
 
 import { useTheme } from "@/contexts/theme-context";
 
@@ -49,4 +50,4 @@ const ThemeToggle = () => {
   );
 };
 
-export default ThemeToggle;
+export default memo(ThemeToggle);

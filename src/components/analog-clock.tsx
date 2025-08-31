@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { memo } from "react";
 
 const AnalogClock = ({
   elapsedTime,
@@ -212,4 +213,4 @@ const AnalogClock = ({
   );
 };
 
-export default AnalogClock;
+export default memo(AnalogClock);

@@ -1,6 +1,7 @@
 import { ClockMode } from "@/types";
 import { Clock } from "lucide-react";
 import { motion } from "motion/react";
+import { memo } from "react";
 
 const ClockToggle = ({
   clockMode,
@@ -64,4 +65,4 @@ const ClockToggle = ({
   );
 };
 
-export default ClockToggle;
+export default memo(ClockToggle);
