@@ -1,6 +1,20 @@
 import { motion } from "motion/react";
 import { memo } from "react";
 
+const MinuteHand = ({ angle }: { angle: number }) => (
+  <div
+    className="absolute top-1/2 left-1/2 bg-destructive rounded-full z-20"
+    style={{
+      width: "2px",
+      height: "140px",
+      marginLeft: "-1px",
+      marginTop: "-120px",
+      transformOrigin: "50% calc(100% - 20px)",
+      transform: `rotate(${angle}deg)`,
+    }}
+  />
+);
+
 const AnalogClock = ({
   elapsedTime,
   isInitialLoad,
@@ -10,13 +24,8 @@ const AnalogClock = ({
 }) => {
   // Analog clock calculations
   const totalSeconds = elapsedTime / 1000;
-  const minutes = totalSeconds / 60;
   const seconds = (totalSeconds % 60) / 60;
-  const milliseconds = (elapsedTime % 1000) / 1000;
-
-  const minuteAngle = (minutes % 60) * 6; // 360/60 = 6 degrees per minute
-  const secondAngle = seconds * 360;
-  const msAngle = milliseconds * 360;
+  const angle = seconds * 360;
 
   const initialDelay = (i: number) => (isInitialLoad ? 1.5 + i * 0.1 : 0);
 
@@ -26,21 +35,8 @@ const AnalogClock = ({
     visible: (i: number) => ({
       opacity: 1,
       transition: {
-        duration: 0.3,
-        delay: initialDelay(i),
-        ease: "easeOut" as const,
-      },
-    }),
-  };
-
-  const handVariants = {
-    hidden: { scaleY: 0, opacity: 0 },
-    visible: (delay: number) => ({
-      scaleY: 1,
-      opacity: 1,
-      transition: {
         duration: 0.4,
-        delay: initialDelay(delay),
+        delay: initialDelay(i),
         ease: "easeOut" as const,
       },
     }),
@@ -67,9 +63,9 @@ const AnalogClock = ({
         {Array.from({ length: 60 }, (_, i) => (
           <div
             key={i}
-            className={`absolute w-px bg-muted-foreground ${
-              i % 5 === 0 ? "h-6" : "h-3"
-            } ${i % 10 === 0 ? "bg-foreground w-0.5" : ""}`}
+            className={`absolute bg-muted-foreground rounded-full ${
+              i % 5 === 0 ? "h-6 w-0.5" : "h-3 w-0.25"
+            } ${i % 10 === 0 ? "bg-foreground" : ""}`}
             style={{
               top: "8px",
               left: "50%",
@@ -81,14 +77,14 @@ const AnalogClock = ({
 
         {/* Numbers for 10-minute intervals */}
         {Array.from({ length: 6 }, (_, i) => {
-          const angle = i * 60 - 90;
-          const radius = 110;
+          const angle = i * 60 - 30;
+          const radius = 112;
           const x = Math.cos((angle * Math.PI) / 180) * radius;
           const y = Math.sin((angle * Math.PI) / 180) * radius;
           return (
             <motion.div
               key={i}
-              className="absolute text-base font-medium font-mono text-foreground flex items-center justify-center w-10 h-10 z-50"
+              className="absolute text-base font-medium font-mono text-foreground flex items-center justify-center w-10 h-10"
               style={{
                 left: `calc(50% + ${x}px - 20px)`,
                 top: `calc(50% + ${y}px - 20px)`,
@@ -98,113 +94,51 @@ const AnalogClock = ({
               animate="visible"
               custom={i}
             >
-              {i * 10}
+              {(i + 1) * 10}
             </motion.div>
           );
         })}
 
         {/* Center dot */}
-        <motion.div
-          className="absolute top-1/2 left-1/2 w-3 h-3 bg-accent rounded-full transform -translate-x-1/2 -translate-y-1/2 z-40"
-          variants={centerDotVariants}
-          initial={isInitialLoad ? "hidden" : "visible"}
-          animate="visible"
+        <div
+          className="absolute top-1/2 left-1/2 w-2.5 h-2.5 border-2 bg-card rounded-full transform -translate-x-1/2 -translate-y-1/2 z-40"
+          style={{ borderColor: "var(--destructive)" }} // global styles overriding border color
         />
 
-        {/* Minute hand */}
-        {isInitialLoad ? (
-          <motion.div
-            className="absolute top-1/2 left-1/2 origin-bottom bg-accent rounded-full z-10"
-            style={{
-              width: "4px",
-              height: "100px",
-              marginLeft: "-2px",
-              marginTop: "-100px",
-              transform: `rotate(${minuteAngle}deg)`,
-            }}
-            variants={handVariants}
-            initial="hidden"
-            animate="visible"
-            custom={1.3}
-          />
-        ) : (
-          <div
-            className="absolute top-1/2 left-1/2 origin-bottom bg-accent rounded-full z-10"
-            style={{
-              width: "4px",
-              height: "100px",
-              marginLeft: "-2px",
-              marginTop: "-100px",
-              transform: `rotate(${minuteAngle}deg)`,
-              transition: "none",
-            }}
-          />
-        )}
+        {/* Digital time display */}
+        <motion.div
+          className="absolute top-2/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          initial={
+            isInitialLoad
+              ? { opacity: 0, scale: 0.8 }
+              : { opacity: 1, scale: 1 }
+          }
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            duration: 0.4,
+            delay: isInitialLoad ? 1.6 : 0,
+            ease: "easeOut",
+          }}
+        >
+          <div className="bg-card/80 backdrop-blur-sm px-3 py-1.5">
+            <div className="text-sm font-mono font-medium text-foreground tracking-wider">
+              {Math.floor(elapsedTime / 60000)
+                .toString()
+                .padStart(2, "0")}
+              :
+              {Math.floor((elapsedTime % 60000) / 1000)
+                .toString()
+                .padStart(2, "0")}
+              :
+              {Math.floor((elapsedTime % 1000) / 10)
+                .toString()
+                .padStart(2, "0")}
+            </div>
+          </div>
+        </motion.div>
 
         {/* Second hand */}
-        {isInitialLoad ? (
-          <motion.div
-            className="absolute top-1/2 left-1/2 origin-bottom bg-destructive rounded-full z-20"
-            style={{
-              width: "2px",
-              height: "120px",
-              marginLeft: "-1px",
-              marginTop: "-120px",
-              transform: `rotate(${secondAngle}deg)`,
-            }}
-            variants={handVariants}
-            initial="hidden"
-            animate="visible"
-            custom={1.4}
-          />
-        ) : (
-          <div
-            className="absolute top-1/2 left-1/2 origin-bottom bg-destructive rounded-full z-20"
-            style={{
-              width: "2px",
-              height: "120px",
-              marginLeft: "-1px",
-              marginTop: "-120px",
-              transform: `rotate(${secondAngle}deg)`,
-              transition: "none",
-            }}
-          />
-        )}
-
-        {/* Millisecond hand */}
-        {isInitialLoad ? (
-          <motion.div
-            className="absolute top-1/2 left-1/2 origin-bottom rounded-full z-30"
-            style={{
-              width: "1px",
-              height: "140px",
-              marginLeft: "-0.5px",
-              marginTop: "-140px",
-              transform: `rotate(${msAngle}deg)`,
-              backgroundColor: "var(--accent)",
-              opacity: "0.8",
-              transition: "none",
-            }}
-            variants={handVariants}
-            initial="hidden"
-            animate="visible"
-            custom={1.5}
-          />
-        ) : (
-          <div
-            className="absolute top-1/2 left-1/2 origin-bottom rounded-full z-30"
-            style={{
-              width: "1px",
-              height: "140px",
-              marginLeft: "-0.5px",
-              marginTop: "-140px",
-              transform: `rotate(${msAngle}deg)`,
-              backgroundColor: "var(--accent)",
-              opacity: "0.8",
-              transition: "none", // No transition for smooth millisecond movement
-            }}
-          />
-        )}
+        <MinuteHand angle={angle} />
       </div>
     </div>
   );
