@@ -27,34 +27,6 @@ const AnalogClock = ({
   const seconds = (totalSeconds % 60) / 60;
   const angle = seconds * 360;
 
-  const initialDelay = (i: number) => (isInitialLoad ? 1.5 + i * 0.1 : 0);
-
-  // Animation variants
-  const numberVariants = {
-    hidden: { opacity: 0 },
-    visible: (i: number) => ({
-      opacity: 1,
-      transition: {
-        duration: 0.4,
-        delay: initialDelay(i),
-        ease: "easeOut" as const,
-      },
-    }),
-  };
-
-  const centerDotVariants = {
-    hidden: { scale: 0, opacity: 0 },
-    visible: {
-      scale: 1,
-      opacity: 1,
-      transition: {
-        duration: 0.3,
-        delay: initialDelay(1.2),
-        ease: "easeOut" as const,
-      },
-    },
-  };
-
   return (
     <div className="relative w-80 h-80 mx-auto select-none">
       {/* Clock face */}
@@ -89,7 +61,17 @@ const AnalogClock = ({
                 left: `calc(50% + ${x}px - 20px)`,
                 top: `calc(50% + ${y}px - 20px)`,
               }}
-              variants={numberVariants}
+              variants={{
+                hidden: { opacity: 0 },
+                visible: (i: number) => ({
+                  opacity: 1,
+                  transition: {
+                    duration: 0.4,
+                    delay: isInitialLoad ? 1.5 + i * 0.1 : 0,
+                    ease: "easeOut" as const,
+                  },
+                }),
+              }}
               initial={isInitialLoad ? "hidden" : "visible"}
               animate="visible"
               custom={i}
