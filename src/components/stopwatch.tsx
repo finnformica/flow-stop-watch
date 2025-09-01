@@ -48,10 +48,10 @@ const Stopwatch = () => {
   });
 
   return (
-    <div className="min-h-screen max-w-6xl bg-background mx-auto p-8 flex flex-col gap-6 transition-colors duration-200">
+    <div className="min-h-screen max-w-6xl bg-background mx-auto p-3 sm:p-8 flex flex-col gap-3 sm:gap-6 transition-colors duration-200">
       {/* Header */}
       <motion.div
-        className="flex items-center justify-between"
+        className="flex items-center justify-between gap-4"
         initial={initial}
         animate={animate}
         transition={transition(0)}
@@ -79,7 +79,7 @@ const Stopwatch = () => {
           transition={transition}
         />
 
-        <div className="p-8">
+        <div className="p-3 sm:p-8">
           <AnimatePresence mode="wait">
             {clockMode === "analog" ? (
               <motion.div
@@ -114,7 +114,6 @@ const Stopwatch = () => {
       </motion.div>
 
       <motion.div
-        className="space-y-6"
         initial={initial}
         animate={animate}
         transition={transition(2)}

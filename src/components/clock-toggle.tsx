@@ -14,7 +14,7 @@ const ClockToggle = ({
 }) => {
   return (
     <motion.div
-      className="absolute top-2 left-2 lg:top-4 lg:left-4 z-10 flex gap-0.5 bg-muted rounded-lg p-0.5 border"
+      className="absolute top-2 left-2 lg:top-4 lg:left-4 z-10 flex gap-0.5 bg-muted rounded-lg p-0.5 border w-20 sm:w-32"
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={transition(3)}
@@ -22,12 +22,10 @@ const ClockToggle = ({
       {/* Sliding background */}
       <motion.div
         layout
-        className="absolute bg-card shadow-sm rounded-md"
+        className="absolute top-0.5 bg-card shadow-sm rounded-md w-1/2"
         style={{
-          width: "56px",
           height: "calc(100% - 4px)",
-          top: "2px",
-          left: clockMode === "analog" ? "2px" : "calc(50% + 1px)",
+          left: clockMode === "analog" ? "2px" : "calc(50% - 2px)",
         }}
         transition={{
           type: "spring",
@@ -39,7 +37,7 @@ const ClockToggle = ({
       {/* Analog button */}
       <button
         onClick={() => setClockMode("analog")}
-        className={`relative px-2.5 py-1.5 rounded-md transition-colors duration-200 flex items-center justify-center w-14 z-10 ${
+        className={`relative px-2.5 py-1.5 rounded-md transition-colors duration-200 flex items-center justify-center w-1/2 z-10 ${
           clockMode === "analog"
             ? "text-foreground"
             : "text-muted-foreground hover:text-foreground"
@@ -52,14 +50,15 @@ const ClockToggle = ({
       {/* Digital button */}
       <button
         onClick={() => setClockMode("digital")}
-        className={`relative py-1.5 rounded-md transition-colors duration-200 flex items-center justify-center w-14 z-10 ${
+        className={`relative py-1.5 rounded-md transition-colors duration-200 flex items-center justify-center w-1/2 z-10 text-xs font-mono font-medium ${
           clockMode === "digital"
             ? "text-foreground"
             : "text-muted-foreground hover:text-foreground"
         }`}
         title="Digital clock"
       >
-        <span className="text-xs font-mono font-medium">MM:SS</span>
+        <span className="hidden sm:block">MM:SS</span>
+        <span className="block sm:hidden">00</span>
       </button>
     </motion.div>
   );

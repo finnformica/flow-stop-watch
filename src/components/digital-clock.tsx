@@ -11,7 +11,18 @@ const CounterLabel = ({ label }: { label: string }) => {
   );
 };
 
-const CounterSeparator = () => {
+const MobileCounterSeparator = () => {
+  return (
+    <div className="flex flex-col items-center">
+      <span className="text-lg font-light text-muted-foreground h-8 flex items-center">
+        :
+      </span>
+      <div className="h-3"></div>
+    </div>
+  );
+};
+
+const DesktopCounterSeparator = () => {
   return (
     <div className="flex flex-col items-center">
       <span className="text-3xl font-light text-muted-foreground h-16 flex items-center">
@@ -44,41 +55,85 @@ const DigitalClock = ({ elapsedTime }: { elapsedTime: number }) => {
   ];
 
   return (
-    <div className="flex items-center justify-center w-80 h-80 mx-auto select-none font-mono">
-      <div className="flex items-center gap-2">
-        {timeUnits.map((unit, index) => (
-          <React.Fragment key={unit.label}>
-            <div className="flex flex-col items-center">
-              <Counter
-                value={unit.value}
-                fontSize={48}
-                padding={8}
-                places={[10, 1]}
-                gap={2}
-                borderRadius={8}
-                horizontalPadding={12}
-                textColor={textColor}
-                fontWeight="300"
-                containerStyle={{
-                  background: containerBg,
-                  borderRadius: "8px",
-                }}
-                counterStyle={{}}
-                digitStyle={{}}
-                gradientHeight={12}
-                gradientFrom={gradientFrom}
-                gradientTo="transparent"
-                topGradientStyle={{}}
-                bottomGradientStyle={{}}
-              />
-              <CounterLabel label={unit.label} />
-            </div>
+    <>
+      {/* Mobile version */}
+      <div className="sm:hidden">
+        <div className="flex items-center justify-center w-56 h-56 mx-auto select-none font-mono">
+          <div className="flex items-center gap-1">
+            {timeUnits.map((unit, index) => (
+              <React.Fragment key={unit.label}>
+                <div className="flex flex-col items-center">
+                  <Counter
+                    value={unit.value}
+                    fontSize={28}
+                    padding={3}
+                    places={[10, 1]}
+                    gap={1}
+                    borderRadius={6}
+                    horizontalPadding={6}
+                    textColor={textColor}
+                    fontWeight="300"
+                    containerStyle={{
+                      background: containerBg,
+                      borderRadius: "6px",
+                    }}
+                    counterStyle={{}}
+                    digitStyle={{}}
+                    gradientHeight={8}
+                    gradientFrom={gradientFrom}
+                    gradientTo="transparent"
+                    topGradientStyle={{}}
+                    bottomGradientStyle={{}}
+                  />
+                  <CounterLabel label={unit.label} />
+                </div>
 
-            {index < timeUnits.length - 1 && <CounterSeparator />}
-          </React.Fragment>
-        ))}
+                {index < timeUnits.length - 1 && <MobileCounterSeparator />}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
+
+      {/* Desktop version */}
+      <div className="hidden sm:block">
+        <div className="flex items-center justify-center w-80 h-80 mx-auto select-none font-mono">
+          <div className="flex items-center gap-2">
+            {timeUnits.map((unit, index) => (
+              <React.Fragment key={unit.label}>
+                <div className="flex flex-col items-center">
+                  <Counter
+                    value={unit.value}
+                    fontSize={48}
+                    padding={8}
+                    places={[10, 1]}
+                    gap={2}
+                    borderRadius={8}
+                    horizontalPadding={12}
+                    textColor={textColor}
+                    fontWeight="300"
+                    containerStyle={{
+                      background: containerBg,
+                      borderRadius: "8px",
+                    }}
+                    counterStyle={{}}
+                    digitStyle={{}}
+                    gradientHeight={12}
+                    gradientFrom={gradientFrom}
+                    gradientTo="transparent"
+                    topGradientStyle={{}}
+                    bottomGradientStyle={{}}
+                  />
+                  <CounterLabel label={unit.label} />
+                </div>
+
+                {index < timeUnits.length - 1 && <DesktopCounterSeparator />}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

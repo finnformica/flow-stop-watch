@@ -111,7 +111,7 @@ const LapTimes = ({ lapTimes, formatTime }: LapTimesProps) => {
     <AnimatePresence>
       {lapTimes.length > 0 && (
         <motion.div
-          className="space-y-6"
+          className="space-y-4"
           initial={{ opacity: 0, y: 30, height: 0 }}
           animate={{ opacity: 1, y: 0, height: "auto" }}
           exit={{ opacity: 0, y: -20, height: 0 }}
@@ -119,7 +119,7 @@ const LapTimes = ({ lapTimes, formatTime }: LapTimesProps) => {
           layout
         >
           <motion.h3
-            className="text-xl font-medium text-foreground text-center"
+            className="hidden sm:blocktext-xl font-medium text-foreground text-center"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
@@ -130,7 +130,7 @@ const LapTimes = ({ lapTimes, formatTime }: LapTimesProps) => {
 
           {/* Lap Statistics */}
           <motion.div
-            className="grid grid-cols-3 gap-4 bg-muted rounded-xl p-4 border"
+            className="grid grid-cols-3 gap-4 bg-muted rounded-xl p-2 sm:p-4 border"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, delay: 0.2 }}

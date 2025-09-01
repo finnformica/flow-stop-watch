@@ -120,7 +120,7 @@ const ControlPanel = ({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -5 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="flex items-center justify-center gap-4"
+          className="flex items-center justify-center gap-4 sm:mb-6"
         >
           {buttons.map((button, index) => (
             <Button key={index} {...button} />
@@ -129,7 +129,7 @@ const ControlPanel = ({
       </AnimatePresence>
 
       {/* Keyboard Shortcuts */}
-      <div className="w-full flex items-center justify-center gap-6 py-4 border-y border-border text-sm">
+      <div className="w-full hidden sm:flex items-center justify-center gap-6 py-4 border-y border-border text-sm">
         <AnimatePresence mode="wait">
           <motion.div
             key={isRunning ? "running-shortcuts" : "stopped-shortcuts"}
