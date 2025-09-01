@@ -14,7 +14,7 @@ const ClockToggle = ({
 }) => {
   return (
     <motion.div
-      className="absolute top-4 left-4 z-10 flex gap-0.5 bg-muted rounded-lg p-0.5 border"
+      className="absolute top-2 left-2 lg:top-4 lg:left-4 z-10 flex gap-0.5 bg-muted rounded-lg p-0.5 border"
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={transition(3)}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import useStopwatch from "@/hooks/use-stopwatch";
 
 import { ClockMode } from "@/types";
+import Image from "next/image";
 import AnalogClock from "./analog-clock";
 import ClockToggle from "./clock-toggle";
 import ControlPanel from "./control-panel";
@@ -25,6 +26,10 @@ const Stopwatch = () => {
   const [clockMode, setClockMode] = useState<ClockMode>("analog");
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
+  const openWebsite = () => {
+    window.open("https://finnformica.com", "_blank");
+  };
+
   useEffect(() => {
     // After initial animations complete, mark as no longer initial load
     const timer = setTimeout(() => {
@@ -43,7 +48,7 @@ const Stopwatch = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background transition-colors duration-200 min-w-lg max-w-6xl mx-auto p-8 space-y-6">
+    <div className="min-h-screen max-w-6xl bg-background mx-auto p-8 flex flex-col gap-6 transition-colors duration-200">
       {/* Header */}
       <motion.div
         className="flex items-center justify-between"
@@ -124,6 +129,52 @@ const Stopwatch = () => {
       </motion.div>
 
       <LapTimes lapTimes={lapTimes} formatTime={formatTime} />
+
+      {/* Footer */}
+      <motion.footer
+        className="mt-16 flex flex-col items-center justify-end gap-4 font-mono grow"
+        initial={initial}
+        animate={animate}
+        transition={{
+          duration: 0.3,
+          delay: 1.2,
+          ease: "easeOut",
+        }}
+      >
+        <p className="text-xs text-muted-foreground text-center">
+          {"Built with Next.js, Tailwind, and Motion by @finnformica"
+            .split(" ")
+            .map((word, index, array) => (
+              <motion.span
+                key={index}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.3,
+                  delay: 1 + index * 0.1,
+                  type: "spring",
+                  stiffness: 100,
+                }}
+                className={`inline-block mr-1.5 ${
+                  index === array.length - 1
+                    ? "text-foreground font-bold hover:underline cursor-pointer"
+                    : ""
+                }`}
+                onClick={index === array.length - 1 ? openWebsite : undefined}
+              >
+                {word}
+              </motion.span>
+            ))}
+        </p>
+
+        <Image
+          width={50}
+          height={50}
+          src="/finnformica-logo.png"
+          alt="Finn Formica"
+          className="rounded-full aspect-square object-cover"
+        />
+      </motion.footer>
     </div>
   );
 };

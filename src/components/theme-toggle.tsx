@@ -22,7 +22,7 @@ const ThemeToggle = () => {
     initial,
     animate,
     style: { originY: 1, originX: 0.5 },
-    transition: { duration: 0.3, ease: "easeInOut" as const },
+    transition: { duration: 0.2, ease: "easeInOut" as const },
   };
 
   return (
