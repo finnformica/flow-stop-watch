@@ -8,15 +8,24 @@ const useStopwatch = () => {
   const [lapTimes, setLapTimes] = useState<LapTime[]>([]);
 
   const toggleTimer = useCallback(() => {
-    if (isRunning) {
-      // Pausing - just stop the timer
-      setIsRunning(false);
-    } else {
-      // Starting/Resuming - set start time accounting for any previous elapsed time
-      setStartTime(performance.now() - elapsedTime);
-      setIsRunning(true);
-    }
-  }, [isRunning, elapsedTime]);
+    setIsRunning((prevIsRunning) => {
+      if (prevIsRunning) {
+        // Pausing - just stop the timer
+        return false;
+      } else {
+        // Starting/Resuming - set start time accounting for any previous elapsed time
+        setStartTime((prevStartTime) => {
+          setElapsedTime((prevElapsedTime) => {
+            const newStartTime = performance.now() - prevElapsedTime;
+            setStartTime(newStartTime);
+            return prevElapsedTime;
+          });
+          return prevStartTime;
+        });
+        return true;
+      }
+    });
+  }, []);
 
   const resetTimer = useCallback(() => {
     setElapsedTime(0);
@@ -26,18 +35,27 @@ const useStopwatch = () => {
   }, []);
 
   const addLap = useCallback(() => {
-    if (isRunning && elapsedTime > 0) {
-      const newLap = {
-        id: lapTimes.length + 1,
-        cumulative: elapsedTime,
-        split:
-          lapTimes.length === 0
-            ? elapsedTime
-            : elapsedTime - lapTimes[0].cumulative,
-      };
-      setLapTimes((prev) => [newLap, ...prev]);
-    }
-  }, [isRunning, elapsedTime, lapTimes]);
+    setLapTimes((prevLapTimes) => {
+      setElapsedTime((currentElapsedTime) => {
+        setIsRunning((currentIsRunning) => {
+          if (currentIsRunning && currentElapsedTime > 0) {
+            const newLap = {
+              id: prevLapTimes.length + 1,
+              cumulative: currentElapsedTime,
+              split:
+                prevLapTimes.length === 0
+                  ? currentElapsedTime
+                  : currentElapsedTime - prevLapTimes[0].cumulative,
+            };
+            setLapTimes([newLap, ...prevLapTimes]);
+          }
+          return currentIsRunning;
+        });
+        return currentElapsedTime;
+      });
+      return prevLapTimes;
+    });
+  }, []);
 
   const formatTime = useCallback((ms: number | null) => {
     if (ms === null) return "00:00:00";
@@ -78,12 +96,15 @@ const useStopwatch = () => {
       } else if (e.code === "KeyL" && isRunning) {
         e.preventDefault();
         addLap();
+      } else if (e.code === "KeyR" && !isRunning && elapsedTime > 0) {
+        e.preventDefault();
+        resetTimer();
       }
     };
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [addLap, isRunning, toggleTimer]);
+  }, [addLap, elapsedTime, isRunning, resetTimer, toggleTimer]);
 
   return {
     elapsedTime,
