@@ -1,5 +1,5 @@
 import { LapTime } from "@/types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const useStopwatch = () => {
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -7,24 +7,25 @@ const useStopwatch = () => {
   const [startTime, setStartTime] = useState(0);
   const [lapTimes, setLapTimes] = useState<LapTime[]>([]);
 
+  // Use refs to access current values without causing re-renders
+  const isRunningRef = useRef(isRunning);
+  const elapsedTimeRef = useRef(elapsedTime);
+  const lapTimesRef = useRef(lapTimes);
+
+  // Update refs when state changes
+  isRunningRef.current = isRunning;
+  elapsedTimeRef.current = elapsedTime;
+  lapTimesRef.current = lapTimes;
+
   const toggleTimer = useCallback(() => {
-    setIsRunning((prevIsRunning) => {
-      if (prevIsRunning) {
-        // Pausing - just stop the timer
-        return false;
-      } else {
-        // Starting/Resuming - set start time accounting for any previous elapsed time
-        setStartTime((prevStartTime) => {
-          setElapsedTime((prevElapsedTime) => {
-            const newStartTime = performance.now() - prevElapsedTime;
-            setStartTime(newStartTime);
-            return prevElapsedTime;
-          });
-          return prevStartTime;
-        });
-        return true;
-      }
-    });
+    if (isRunningRef.current) {
+      // Pausing - just stop the timer
+      setIsRunning(false);
+    } else {
+      // Starting/Resuming - set start time accounting for any previous elapsed time
+      setStartTime(performance.now() - elapsedTimeRef.current);
+      setIsRunning(true);
+    }
   }, []);
 
   const resetTimer = useCallback(() => {
@@ -35,26 +36,20 @@ const useStopwatch = () => {
   }, []);
 
   const addLap = useCallback(() => {
-    setLapTimes((prevLapTimes) => {
-      setElapsedTime((currentElapsedTime) => {
-        setIsRunning((currentIsRunning) => {
-          if (currentIsRunning && currentElapsedTime > 0) {
-            const newLap = {
-              id: prevLapTimes.length + 1,
-              cumulative: currentElapsedTime,
-              split:
-                prevLapTimes.length === 0
-                  ? currentElapsedTime
-                  : currentElapsedTime - prevLapTimes[0].cumulative,
-            };
-            setLapTimes([newLap, ...prevLapTimes]);
-          }
-          return currentIsRunning;
-        });
-        return currentElapsedTime;
-      });
-      return prevLapTimes;
-    });
+    if (isRunningRef.current && elapsedTimeRef.current > 0) {
+      const split =
+        lapTimesRef.current.length === 0
+          ? elapsedTimeRef.current
+          : elapsedTimeRef.current - lapTimesRef.current[0].cumulative;
+
+      const newLap = {
+        id: lapTimesRef.current.length + 1,
+        cumulative: elapsedTimeRef.current,
+        split,
+      };
+
+      setLapTimes([newLap, ...lapTimesRef.current]);
+    }
   }, []);
 
   const formatTime = useCallback((ms: number | null) => {

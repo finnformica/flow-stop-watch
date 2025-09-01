@@ -1,6 +1,6 @@
 import { LapTime } from "@/types";
 import { AnimatePresence, motion } from "motion/react";
-import { memo } from "react";
+import { memo, useCallback } from "react";
 
 type LapTimeItemProps = {
   lap: LapTime;
@@ -21,7 +21,7 @@ const LapTimeItem = ({
   const isSlowest = lap.split === slowestLap;
   const barWidth = (lap.split / maxSplit) * 100;
 
-  const getLapColors = () => {
+  const getLapColors = useCallback(() => {
     if (isFastest) {
       return {
         barColor: "bg-success",
@@ -39,7 +39,7 @@ const LapTimeItem = ({
       barColor: "bg-accent",
       textColor: "text-foreground",
     };
-  };
+  }, [isFastest, isSlowest]);
 
   const { barColor, textColor } = getLapColors();
 
