@@ -172,12 +172,29 @@ const LapTimes = ({ lapTimes, formatTime }: LapTimesProps) => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.4 }}
           >
-            <motion.h4
-              className="text-sm font-medium text-foreground mb-3"
+            <motion.div
+              className="flex items-center justify-between mb-3"
               layout
             >
-              Lap Performance
-            </motion.h4>
+              <motion.h4 className="text-sm font-medium text-foreground" layout>
+                Lap Performance
+              </motion.h4>
+
+              {/* Column Headers */}
+              <motion.div className="flex items-center gap-3" layout>
+                <div className="w-20 text-center">
+                  <span className="text-xs font-medium text-muted-foreground">
+                    Split
+                  </span>
+                </div>
+                <div className="w-24 text-center">
+                  <span className="text-xs font-medium text-muted-foreground">
+                    Time
+                  </span>
+                </div>
+              </motion.div>
+            </motion.div>
+
             <motion.div className="space-y-1" layout>
               <AnimatePresence>
                 {lapTimes.map((lap) => (
