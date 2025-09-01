@@ -1,7 +1,7 @@
 // Code from https://reactbits.dev/components/counter
 
 import { motion, MotionValue, useSpring, useTransform } from "motion/react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import styles from "@/styles/counter.module.css";
 
@@ -44,11 +44,24 @@ function Digit({
   const valueRoundedToPlace = Math.floor(value / place);
   const animatedValue = useSpring(valueRoundedToPlace, {
     damping: 30,
-    stiffness: 200
+    stiffness: 200,
   });
 
+  const lastUpdate = useRef(Date.now());
+
   useEffect(() => {
-    animatedValue.set(valueRoundedToPlace);
+    const animationDurationMs = 150;
+    const deltaMs = Date.now() - lastUpdate.current;
+    lastUpdate.current = Date.now();
+
+    // Skip animation for rapid updates but still update the value
+    if (deltaMs <= animationDurationMs) {
+      // Jump directly to the value without animation
+      animatedValue.jump(valueRoundedToPlace);
+    } else {
+      // Animate to the value for normal updates
+      animatedValue.set(valueRoundedToPlace);
+    }
   }, [animatedValue, valueRoundedToPlace]);
 
   return (
